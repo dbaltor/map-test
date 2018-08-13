@@ -22,7 +22,7 @@ var http = require('http');
 var express = require('express');
 var SSE = require('sse');
 var readline = require('readline');
-var LineByLineReader = require('./line-by-line');
+var LineByLineReader = require('line-by-line');
 
 var app = express().use(express.static('public'));
 var server = http.createServer(app);
