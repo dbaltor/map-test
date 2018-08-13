@@ -1,0 +1,3 @@
+[submodule "lib/line-by-line"]
+	path = lib/line-by-line
+	url = https://github.com/Osterjour/line-by-line

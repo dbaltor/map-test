@@ -19,13 +19,24 @@
     </head>
     <body>
         <style>
-            .marker {
+            .markerHeatMap {
                 display: block;
                 border: none;
                 border-radius: 50%;
+				width: 20px;
+                height: 20px;
                 cursor: pointer;
                 padding: 0;
             }
+			
+            .markerVehicle {
+                background-image: url('vehicle.png');
+                background-size: cover;
+                width: 10px;
+                height: 10px;
+                cursor: pointer;
+            }
+			
             
         </style>
         <div id='map'></div>

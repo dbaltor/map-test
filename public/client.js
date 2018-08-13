@@ -46,7 +46,7 @@
 
 			// create a DOM element for the marker
 			var el = document.createElement('div');
-			el.className = 'marker';
+			el.className = 'markerHeatMap';
 			el.style.backgroundImage = 'url(marker_' + fields[2] + '.png)';
             el.style.width = '20px';
             el.style.height = '20px';
@@ -60,10 +60,15 @@
 
 			// create a DOM element for the marker
 			var el = document.createElement('div');
-			el.className = 'marker';
-			el.style.backgroundImage = 'url(vehicle.png)';
-            el.style.width = '10px';
-            el.style.height = '10px';
+			el.className = 'markerVehicle';
+			//el.style.backgroundImage = 'url(vehicle.png)';
+            //el.style.width = '10px';
+            //el.style.height = '10px';
+			
+			el.addEventListener('click', function() {
+				window.alert(fields[0]);
+			});
+
 
 			// Remove the marker if it already exists
 			if (lab2markers.has(fields[0]))

@@ -1,2 +1,3 @@
-	web: ./readfile.sh test.csv | node server.js both 50
+	web: ./readfile.sh test.csv | node server.js both 50 3
+	
 
