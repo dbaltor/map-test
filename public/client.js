@@ -61,9 +61,6 @@
 			// create a DOM element for the marker
 			var el = document.createElement('div');
 			el.className = 'markerVehicle';
-			//el.style.backgroundImage = 'url(vehicle.png)';
-            //el.style.width = '10px';
-            //el.style.height = '10px';
 			
 			el.addEventListener('click', function() {
 				window.alert(fields[0]);

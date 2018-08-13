@@ -18,6 +18,7 @@ switch(lab) {
         console.log('Labs 1 and 2 selected');
 } 
 
+const PORT = process.env.PORT || 8080
 var http = require('http');
 var express = require('express');
 var SSE = require('sse');
@@ -28,7 +29,7 @@ var app = express().use(express.static('public'));
 var server = http.createServer(app);
 var clients = [];
 
-server.listen(8080, '127.0.0.1', function() {
+server.listen(PORT, function() {
   var sse = new SSE(server);
   
   sse.on('connection', function(stream) {
