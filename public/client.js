@@ -1,7 +1,8 @@
 	var stream = new EventSource("/sse");
 	var log = console.log;
 	var map;
-	var lab2markers = new Map();
+	var lab2markers;
+
 
 	window.onload = function() {
 		//Add your Unwired Maps Access Token here (not the API token!)
@@ -14,6 +15,7 @@
 			zoom: 7,
 			center: [-1.3402795, 52.0601807]
 		});
+		lab2markers = new Map();
 	}
 
 	stream.onopen = function() {
