@@ -43,7 +43,7 @@ server.listen(PORT, function() {
 	
 	stream.on('close', function() {
       clients.splice(clients.indexOf(stream), 1);
-      console.log('Closed connection: ' + clients.indexOf(stream));
+      console.log('Closed connection! Total clients = '  + clients.length);
 	  if ((lab == '1' || lab == 'both') && clients.length == 0){ 
 	  	process.stdin.pause(); // pause stdin when the last client exists
 		lab1_lineReader.close();
