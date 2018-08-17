@@ -1,9 +1,11 @@
 	var stream = new EventSource("/sse");
 	var log = console.log;
 	var map;
+	var lab1markers;
 	var lab2markers;
 
-
+	var colors = ['#9e0101', '#c92f1e', '#e85912', '#ef6210', '#f2ff00', '#f4ac1a', '#9ff918', '#43ff00'];
+	
 	window.onload = function() {
 		//Add your Unwired Maps Access Token here (not the API token!)
 		unwired.key = mapboxgl.accessToken = 'xyz';
@@ -14,7 +16,10 @@
 			style: unwired.getLayer("streets"), //get Unwired's style template
 			zoom: 7,
 			center: [-1.3402795, 52.0601807]
+//			center: [-0.213736,51.523524]
 		});
+
+		lab1markers = new Map();
 		lab2markers = new Map();
 	}
 
@@ -40,23 +45,31 @@
 			.slice(1,-2)
 			.split(',');
 
-		if (fields == '') //  message received is empty
+		if (fields == '') //  received message is empty
 			return;			
 		
 		var messageType = message[0].substring(1);
 		if (messageType.includes('m1')) { //LAB 1 message received
+			var keyMarker = fields[0]+fields[1];
 
-			// create a DOM element for the marker
-			var el = document.createElement('div');
-			el.className = 'markerHeatMap';
-			el.style.backgroundImage = 'url(marker_' + fields[2] + '.png)';
-            el.style.width = '20px';
-            el.style.height = '20px';
+			if (lab1markers.has(keyMarker)){
+				// change color if the marker already exists
+				lab1markers.get(keyMarker).style.backgroundColor = colors[fields[2] - 1];
+			} else {
+				// create a DOM element for the marker
+				var el = document.createElement('div');
+				el.className = 'circle';
+				el.style.backgroundColor = colors[fields[2] - 1];
+//				el.className = 'markerHeatMap';
+//				el.style.backgroundImage = 'url(marker_' + fields[2] + '.png)';
 
-			// add marker to map
-			new mapboxgl.Marker(el)
-				.setLngLat([fields[1],fields[0]])
-				.addTo(map);
+				lab1markers.set(keyMarker,el);
+
+				// add marker to map
+				new mapboxgl.Marker(el)
+					.setLngLat([fields[1],fields[0]])
+					.addTo(map);
+			}
 		} 
 		else if (messageType.includes('m2')) { //LAB 2 message received
 

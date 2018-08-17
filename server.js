@@ -88,6 +88,9 @@ server.listen(PORT, function() {
 
 		lab2_lineReader.on('line', function (line) {
 
+			if (line == null || line == '') //  read line is empty
+				return;
+				
 			var msg = line.split(',');
 			var time = msg[0];
 			var vehicle = msg[1];
@@ -100,6 +103,12 @@ server.listen(PORT, function() {
 				vehicles.push(vehicle);
 				stored_vehicles++;
 			}
+
+			// INTERVIEW TASK
+/*			if (vehicle.includes('Vehicle_847')) {
+				vehicles.push(vehicle);
+				stored_vehicles++;
+			}*/
 			
 			//  vehicle listed to send
 			if (vehicles.includes(vehicle)) {
