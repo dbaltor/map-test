@@ -36,19 +36,31 @@ server.listen(PORT, function() {
 	clients.push(stream);
     console.log('Opened connection! Total clients = '  + clients.length);
 
+	// stdin reader
+	var lab1_lineReader;
+	// file reader
+	var	lab2_lineReader;
+	
 	stream.on('close', function() {
       clients.splice(clients.indexOf(stream), 1);
       console.log('Closed connection: ' + clients.indexOf(stream));
+	  if (lab == '1' || lab == 'both'){
+	  	process.stdin.pause();
+		lab1_lineReader.close();
+	  }
+	  if (lab == '2' || lab == 'both'){
+		lab2_lineReader.close();
+	  }
     });
 
 	if (lab == '1' || lab == 'both') {
 		process.stdin.resume();
 		process.stdin.setEncoding('utf8');    
-		var lineReader = readline.createInterface({
+		lab1_lineReader = readline.createInterface({
 		  input: process.stdin
 		});
 
-		lineReader.on('line', function (line) {
+		lab1_lineReader.on('line', function (line) {
 			var json = JSON.stringify({ m1: line });
 			//broadcast(json);		//not to broadcast as each client starts reading the stream from the start
 			stream.send(json);
@@ -65,7 +77,7 @@ server.listen(PORT, function() {
 		const REFRESH_RATE = ((process.argv.length > 4 && !isNaN(process.argv[4])) ? parseInt(process.argv[4]) : 60);
 		console.log('Vehicles real refresh rate = ' + REFRESH_RATE);
 		
-		var	lr = new LineByLineReader('realtimelocation.csv');
+		lab2_lineReader = new LineByLineReader('realtimelocation.csv');
 		
 		const ONE_MINUTE = new Date("1970-01-01T00:01:00Z").getTime();
 		const SLEEP = REFRESH_RATE * 1000; // milliseconds
@@ -74,7 +86,7 @@ server.listen(PORT, function() {
 		var vehicles_to_send = MAX_VEHICLES;
 		var last_time = '';
 
-		lr.on('line', function (line) {
+		lab2_lineReader.on('line', function (line) {
 
 			var msg = line.split(',');
 			var time = msg[0];
@@ -112,31 +124,34 @@ server.listen(PORT, function() {
 					// (Allows for skiping data regarding the vehicle being monitored if the interval chosen is longer than the reads on the file)
 
 					// pause emitting of lines...
-					lr.pause();
+					lab2_lineReader.pause();
 					setTimeout(function () {
 						// reset counter
 						vehicles_to_send = MAX_VEHICLES;
 						
 						// send message
 						var json = JSON.stringify({ m2: msg2send });
-						broadcast(json);		
+						//broadcast(json); //not to broadcast as each client starts reading the stream from the start		
+						stream.send(json);
+						console.log('Sent: ' + json);
+						
 						//decrement vehicles to send
 						vehicles_to_send--;
 
 						// ...and continue emitting lines.
-						lr.resume();
+						lab2_lineReader.resume();
 					}, SLEEP);
 
 				}
 			}
 		});
 
-		lr.on('error', function (err) {
+		lab2_lineReader.on('error', function (err) {
 		  // 'err' contains error object
 			console.log('Error while reading the file: ' + err);
 		});
 
-		lr.on('end', function () {
+		lab2_lineReader.on('end', function () {
 		  // All lines are read, file is closed now.
 			console.log('All lines are read, file is closed now');
 		});
