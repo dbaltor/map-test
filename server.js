@@ -3,8 +3,6 @@
 // example: readfile.bat test.csv | node server.js both 10 2
 // client command line: localhost:8080
 
-process.title = 'denis-map-test';
-
 const DEFAULT_LAB = 'both';
 var lab = ((process.argv.length > 2) ? process.argv[2] : DEFAULT_LAB);
 
@@ -52,7 +50,10 @@ server.listen(PORT, function() {
 
 		lineReader.on('line', function (line) {
 			var json = JSON.stringify({ m1: line });
-			broadcast(json);		
+			//broadcast(json);		//not to broadcast as each client starts reading the stream from the start
+			stream.send(json);
+			console.log('Sent: ' + json);
+
 		});
 	}
 	if (lab == '2' || lab == 'both') {
@@ -96,7 +97,10 @@ server.listen(PORT, function() {
 					
 					// send message
 					var json = JSON.stringify({ m2: msg2send });
-					broadcast(json);		
+					//broadcast(json); //not to broadcast as each client starts reading the stream from the start		
+					stream.send(json);
+					console.log('Sent: ' + json);
+					
 					// decrement vehicles to send
 					vehicles_to_send--;
 					// record the time
