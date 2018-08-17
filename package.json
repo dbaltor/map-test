@@ -7,8 +7,8 @@
     "node": "8.11.3"
   },
   "scripts": {
-    "start": "node server.js both 2",
-    "test": "node test.js",
+    "start": "node server.js 2 20 1",
+    "test": "node test.js"
   },
   "author": "Denis Baltor",
   "license": "MIT",
