@@ -3,6 +3,8 @@
 // example: readfile.bat test.csv | node server.js both 10 2
 // client command line: localhost:8080
 
+process.title = 'denis-map-test';
+
 const DEFAULT_LAB = 'both';
 var lab = ((process.argv.length > 2) ? process.argv[2] : DEFAULT_LAB);
 
