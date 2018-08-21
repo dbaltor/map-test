@@ -21,37 +21,35 @@ switch(lab) {
 const PORT = process.env.PORT || 8080
 var http = require('http');
 var express = require('express');
-var SSE = require('sse');
+var WSS = require('ws').Server;
 var readline = require('readline');
 var LineByLineReader = require('./lib/line-by-line');
+var protobuf = require("protobufjs/minimal");
 
 var app = express().use(express.static('public'));
 var server = http.createServer(app);
-var clients = [];
 
-server.listen(PORT, function() {
-  var sse = new SSE(server);
+server.listen(PORT, '127.0.0.1');
+var wss = new WSS({ port: 8081 });
+wss.on('connection', function(socket) {
   
-  sse.on('connection', function(stream) {
-	clients.push(stream);
-    console.log('Opened connection! Total clients = '  + clients.length);
-
+	console.log('Opened connection! Total clients = '  + wss.clients.length);
 	// stdin reader
 	var lab1_lineReader;
 	// file reader
 	var	lab2_lineReader;
 	
-	stream.on('close', function() {
-      clients.splice(clients.indexOf(stream), 1);
-      console.log('Closed connection! Total clients = '  + clients.length);
-	  if ((lab == '1' || lab == 'both') && clients.length == 0){ 
-	  	process.stdin.pause(); // pause stdin when the last client exists
-		lab1_lineReader.close();
+	socket.on('close', function() {
+
+      console.log('Closed connection! Total clients = '  + wss.clients.length);
+	  if ((lab == '1' || lab == 'both') && wss.clients.length == 0){ 
+	  	lab1_lineReader.close();
+		process.stdin.pause();
 	  }
 	  if (lab == '2' || lab == 'both'){
 		lab2_lineReader.close();
 	  }
-    });
+	});
 
 	if (lab == '1' || lab == 'both') {
 		process.stdin.resume();
@@ -61,11 +59,11 @@ server.listen(PORT, function() {
 		});
 
 		lab1_lineReader.on('line', function (line) {
-			var json = JSON.stringify({ m1: line });
-			//broadcast(json);		//not to broadcast as each client starts reading the stream from the start
-			stream.send(json);
-			console.log('Sent: ' + json);
+		
+			if (line == null || line == '' || socket.readyState != socket.OPEN) //  line is empty or socket is close
+				return;
 
+			sendPacket(socket, 'm1,' + line);
 		});
 	}
 	if (lab == '2' || lab == 'both') {
@@ -96,7 +94,7 @@ server.listen(PORT, function() {
 			var vehicle = msg[1];
 			var lat = msg[2];
 			var longi = msg[3];
-			var msg2send = vehicle + ',' + lat + ',' + longi;
+			var msg2send = 'm2,' + vehicle + ',' + lat + ',' + longi;
 			
 			// add current vehicle to the to send list
 			if (stored_vehicles <= MAX_VEHICLES && !vehicles.includes(vehicle)) {
@@ -117,11 +115,7 @@ server.listen(PORT, function() {
 				if (vehicles_to_send > 0) {
 					
 					// send message
-					var json = JSON.stringify({ m2: msg2send });
-					//broadcast(json); //not to broadcast as each client starts reading the stream from the start		
-					stream.send(json);
-					console.log('Sent: ' + json);
-					
+					sendPacket(socket, msg2send);				
 					// decrement vehicles to send
 					vehicles_to_send--;
 					// record the time
@@ -139,11 +133,7 @@ server.listen(PORT, function() {
 						vehicles_to_send = MAX_VEHICLES;
 						
 						// send message
-						var json = JSON.stringify({ m2: msg2send });
-						//broadcast(json); //not to broadcast as each client starts reading the stream from the start		
-						stream.send(json);
-						console.log('Sent: ' + json);
-						
+						sendPacket(socket, msg2send);
 						//decrement vehicles to send
 						vehicles_to_send--;
 
@@ -167,13 +157,26 @@ server.listen(PORT, function() {
 	}
 	
   });
-});
 
+var sendPacket = function(socket, msg){
+	// protobuf writing
+	var buffer = protobuf.Writer.create()
+		.uint32((1 << 3 | 2) >>> 0) // id 1, wireType 2
+		.string(msg)
+	.finish();
 
-var broadcast = function(json) {
+	try {
+		socket.send(buffer);
+		//console.log('Sent: ' + msg);
+	}
+	catch(err) {
+		console.log('Error when trying to send message: ' + err);
+	}	
+}
 
-  clients.forEach(function(stream) {
-    stream.send(json);
-    console.log('Sent: ' + json);
-  });
+var broadcast = function(msg) {
+	wss.clients.forEach(function(socket) {
+		socket.send(msg);
+		console.log('Sent: ' + msg);
+	});
 }

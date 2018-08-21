@@ -7,7 +7,7 @@ done <"$1"
 
 while :; do
 for line in ${ARRAY[@]}; do
-echo "$line",$(($RANDOM * 8 / 32768 + 1))
+echo "$line",$(($RANDOM * 3 / 32768))
 done
 sleep 1
 done

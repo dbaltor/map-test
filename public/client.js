@@ -1,10 +1,11 @@
-	var stream = new EventSource("/sse");
+	var socket = new WebSocket('ws://localhost:8081/');
+	socket.binaryType = 'arraybuffer';
 	var log = console.log;
 	var map;
-	var lab1markers;
-	var lab2markers;
+	var lab1markers = new Map();
+	var lab2markers = new Map();
 
-	var colors = ['#9e0101', '#c92f1e', '#e85912', '#ef6210', '#f2ff00', '#f4ac1a', '#9ff918', '#43ff00'];
+	var colors = ['#ff0000', '#ffff00', '#00ff00'];
 	
 	window.onload = function() {
 		//Add your Unwired Maps Access Token here (not the API token!)
@@ -15,84 +16,94 @@
 			attributionControl: false, //need this to show a compact attribution icon (i) instead of the whole text
 			style: unwired.getLayer("streets"), //get Unwired's style template
 			zoom: 7,
-			center: [-1.3402795, 52.0601807]
-//			center: [-0.213736,51.523524]
+			center: [-1.3402795, 52.0601807] 	// Banbury
+//			center: [-0.213736,51.523524]		// London
 		});
-
-		lab1markers = new Map();
-		lab2markers = new Map();
 	}
-
-	stream.onopen = function() {
+	
+	socket.onopen = function() {
 		log('Opened connection');
 	  
 	};
 
-	stream.onerror = function (event) {
+	socket.onerror = function (event) {
 	  log('Error: ' + JSON.stringify(event));
 	};
 
 	window.addEventListener("beforeunload", function(e){
-	  stream.close();
+	  socket.close();
 	  log('Closed connection');
 	}, false);
 
-	stream.onmessage = function (event) {
-		log('Received Message: ' + event.data);
-		var message = event.data.split(':');
+	socket.onmessage = function (event) {
+		
+		var message = readPacket( event );
+		//log('Received Message: ' + message);
 
-		var fields = message[1]
-			.slice(1,-2)
-			.split(',');
+		var fields = message.split(',');
 
 		if (fields == '') //  received message is empty
 			return;			
 		
-		var messageType = message[0].substring(1);
-		if (messageType.includes('m1')) { //LAB 1 message received
-			var keyMarker = fields[0]+fields[1];
+		var messageType = fields[0];
+		if (messageType == 'm1') { //LAB 1 message received
+			var keyMarker = fields[1] + fields[2];
 
 			if (lab1markers.has(keyMarker)){
 				// change color if the marker already exists
-				lab1markers.get(keyMarker).style.backgroundColor = colors[fields[2] - 1];
+				lab1markers.get(keyMarker).style.backgroundColor = colors[fields[3]];
 			} else {
 				// create a DOM element for the marker
 				var el = document.createElement('div');
 				el.className = 'circle';
-				el.style.backgroundColor = colors[fields[2] - 1];
-//				el.className = 'markerHeatMap';
-//				el.style.backgroundImage = 'url(marker_' + fields[2] + '.png)';
+				el.style.backgroundColor = colors[fields[3] - 1];
 
 				lab1markers.set(keyMarker,el);
 
 				// add marker to map
 				new mapboxgl.Marker(el)
-					.setLngLat([fields[1],fields[0]])
+					.setLngLat([fields[2],fields[1]])
 					.addTo(map);
 			}
 		} 
-		else if (messageType.includes('m2')) { //LAB 2 message received
+		else if (messageType == 'm2') { //LAB 2 message received
 
 			// create a DOM element for the marker
 			var el = document.createElement('div');
 			el.className = 'markerVehicle';
 			
 			el.addEventListener('click', function() {
-				window.alert(fields[0]);
+				window.alert(fields[1]);
 			});
 
-
 			// Remove the marker if it already exists
-			if (lab2markers.has(fields[0]))
-				lab2markers.get(fields[0]).remove();
+			if (lab2markers.has(fields[1]))
+				lab2markers.get(fields[1]).remove();
 
 			// add marker to map
 			var marker = new mapboxgl.Marker(el)
-				.setLngLat([fields[2],fields[1]])
+				.setLngLat([fields[3], fields[2]])
 				.addTo(map);
 			
 			// store the marker by vehicle id
-			lab2markers.set(fields[0],marker);
+			lab2markers.set(fields[1], marker);
 		} 
 	};
+	
+	var readPacket = function(event){
+		// reading protobuf
+		var reader = protobuf.Reader.create(new Uint8Array(event.data));
+		while (reader.pos < reader.len) {
+			var tag = reader.uint32();
+			switch (/*id*/ tag >>> 3) {
+				case 1:
+					return reader.string();
+					break;
+				default:
+					reader.skipType(/*wireType*/ tag & 7);
+					break;
+			}
+		}
+	}	
+
 

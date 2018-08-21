@@ -12,7 +12,7 @@ call set n=%%i%%
 )
 :loop
 for /L %%i in (1,1,%n%) do (
-call SET /A color=!Random! * 6 / 32768 + 1
+call SET /A color=!Random! * 3 / 32768
 call echo %%array[%%i]%%,!color!
 )
 timeout 1 > NUL
