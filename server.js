@@ -27,8 +27,8 @@ var LineByLineReader = require('./lib/line-by-line');
 var protobuf = require("protobufjs/minimal");
 var path = require('path');
 
-//var app = express().use(express.static('public'));
-var app = express().use(express.static(path.join(__dirname, 'public')));
+var app = express().use(express.static('public'));
+//var app = express().use(express.static(path.join(__dirname, 'public')));
 var server = http.createServer(app);
 
 server.listen(PORT);
