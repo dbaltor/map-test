@@ -30,7 +30,7 @@ var app = express().use(express.static('public'));
 var server = http.createServer(app);
 
 server.listen(PORT);
-var wss = new WSS({ port: 8081 });
+var wss = new WSS({ server });
 wss.on('connection', function(socket) {
   
 	console.log('Opened connection! Total clients = '  + wss.clients.length);

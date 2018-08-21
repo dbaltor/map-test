@@ -1,4 +1,4 @@
-	var socket = new WebSocket('wss://' + window.location.hostname + ':8081/');
+	var socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
 	socket.binaryType = 'arraybuffer';
 	var log = console.log;
 	var map;
