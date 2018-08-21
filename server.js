@@ -29,7 +29,7 @@ var protobuf = require("protobufjs/minimal");
 var app = express().use(express.static('public'));
 var server = http.createServer(app);
 
-server.listen(PORT, '127.0.0.1');
+server.listen(PORT);
 var wss = new WSS({ port: 8081 });
 wss.on('connection', function(socket) {
   
