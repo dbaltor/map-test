@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message MapMessage {
+    required int64 type = 1;
+	required string latitude = 2;
+    required string longitude = 3;
+    optional int64 color = 4;
+	optional string vehicle = 5;
+}

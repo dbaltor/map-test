@@ -19,20 +19,20 @@ switch(lab) {
 } 
 
 const PORT = process.env.PORT || 8080
-var http = require('http');
-var express = require('express');
-var WSS = require('ws').Server;
-var readline = require('readline');
-var LineByLineReader = require('./lib/line-by-line');
-var protobuf = require("protobufjs/minimal");
-var path = require('path');
+const http = require('http');
+const express = require('express');
+const WSS = require('ws').Server;
+const readline = require('readline');
+const LineByLineReader = require('./lib/line-by-line');
+const protobuf = require("protobufjs/minimal");
+const path = require('path');
 
-var app = express().use(express.static('public'));
+const app = express().use(express.static('public'));
 //var app = express().use(express.static(path.join(__dirname, 'public')));
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 server.listen(PORT);
-var wss = new WSS({ server });
+const wss = new WSS({ server });
 wss.on('connection', function(socket) {
   
 	console.log('Opened connection! Total clients = '  + wss.clients.length);

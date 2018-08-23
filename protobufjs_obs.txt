@@ -1,0 +1,16 @@
+
+https://github.com/dcodeIO/ProtoBuf.js
+https://www.npmjs.com/package/protobufjs
+
+*** installing
+npm install protobufjs --save --save-prefix=~
+
+*** include on the server
+var protobuf = require("protobufjs");
+
+*** include on the browser
+<script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.X.X/dist/protobuf.js"></script>		(DEV)
+<script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.8.8/dist/protobuf.min.js"></script> (PRD)
+
+***generate message lib
+node_modules/protobufjs/bin/pbjs -t static-module -w commonjs -o MapMessage.js MapMessage.proto

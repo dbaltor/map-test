@@ -9,6 +9,7 @@
 	
 	window.onload = function() {
 		//Add your Unwired Maps Access Token here (not the API token!)
+		//var unwired;
 		unwired.key = mapboxgl.accessToken = 'xyz';
 		//Define the map and configure the map's theme
 		map = new mapboxgl.Map({
