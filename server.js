@@ -1,7 +1,13 @@
-// Denis test-map
-// server command line: readfile.bat <heatmapfile> | node server.js <Lab: 1,2,both. Default: both> <Vehicles. Defaul: 10> <Vehicles real refresh interval in sec. Default: 60> 
-// example: readfile.bat test.csv | node server.js both 10 2
-// client command line: localhost:8080
+// Denis test-map 2018
+
+// server command line: ./readfile.sh <heatmapfile> | node server.js <lab> <vehicles> <rate>
+// *Lab = Type of simulation. Valid Values: 1, 2, both. Default: both 
+// *Vehicles = Number of vehicles to track. Defaul: 10
+// *Rate = Vehicles real refresh interval in seconds. Default: 60
+// example: ./readfile.sh test.csv | node server.js both 10 2
+
+// client URL: localhost:8080
+
 
 const DEFAULT_LAB = 'both';
 var lab = ((process.argv.length > 2) ? process.argv[2] : DEFAULT_LAB);
@@ -104,7 +110,7 @@ wss.on('connection', function(socket) {
 				stored_vehicles++;
 			}
 
-			// INTERVIEW TASK
+			// TRACKING ONLY ONE VEHICLE TEST
 /*			if (vehicle.includes('Vehicle_847')) {
 				vehicles.push(vehicle);
 				stored_vehicles++;
