@@ -1,4 +1,6 @@
 # Denis map-test 2018
+Test map application developed with Spring Boot.
+
 A small application that updates the UK map based on 2 independent continuous streams of events: 
 1) around 2000 risk areas (Heat map) updated every second 
 2) 100 moving vehicles updated every 2 seconds.
