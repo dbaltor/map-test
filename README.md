@@ -7,12 +7,16 @@ A small application that updates the UK map based on 2 independent continuous st
 
 *server command line:
 =====================
-./readfile.sh <heatmapfile> | node server.js <lab> <vehicles> <rate> 
-*Lab = Type of simulation. Valid Values: 1, 2, both. Default: both
-*Vehicles = Number of vehicles to track. Defaul: 10
-*Rate = Vehicles real refresh interval in seconds. Default: 60
-*example: ./readfile.sh test.csv | node server.js both 10 2
+./readfile.sh {heatmapfile} | node server.js {lab} {vehicles} {rate} 
+<br>*Lab = Type of simulation. Valid Values: 1, 2, both. Default: both
+<br>*Vehicles = Number of vehicles to track. Defaul: 10
+<br>*Rate = Vehicles real refresh interval in seconds. Default: 60
+<br>*example: ./readfile.sh test.csv | node server.js both 10 2
 
 *client URL:
 ============
 localhost:8080
+
+*Cloud URL:
+===========
+https://secure-atoll-96979.herokuapp.com/
