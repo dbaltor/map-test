@@ -19,4 +19,5 @@ localhost:8080
 
 *Cloud URL:
 ===========
-https://secure-atoll-96979.herokuapp.com/
+
+<a href="https://secure-atoll-96979.herokuapp.com/">Running on Heroku</a>
