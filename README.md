@@ -1,5 +1,5 @@
 # Denis map-test 2018
-Test map application developed with Spring Boot.
+Test map application developed on Node.js.
 
 A small application that updates the UK map based on 2 independent continuous streams of events: 
 1) around 2000 risk areas (Heat map) updated every second 
@@ -20,4 +20,4 @@ localhost:8080
 *Cloud URL:
 ===========
 
-<a href="https://secure-atoll-96979.herokuapp.com/">Running on Heroku</a>
+<a href="https://secure-atoll-96979.herokuapp.com/" target="_blank">Running on Heroku</a>
