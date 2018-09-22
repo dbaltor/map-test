@@ -67,7 +67,7 @@ wss.on('connection', function(socket) {
 	  if ((LAB == '1' || LAB == 'both') && wss.clients.length == 0){ 
 		lab1.close(process.stdin);
 	  }
-	  if (LAB == '2' || LAB == 'both'){
+	  if ((LAB == '2' || LAB == 'both') && wss.clients.length == 0){
 		lab2.close();
 	  }
 	});
