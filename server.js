@@ -1,28 +1,47 @@
-// Denis test-map 2018
+/* Denis test-map 2018
 
-// server command line: ./readfile.sh <heatmapfile> | node server.js <lab> <vehicles> <rate>
-// *Lab = Type of simulation. Valid Values: 1, 2, both. Default: both 
-// *Vehicles = Number of vehicles to track. Defaul: 10
-// *Rate = Vehicles real refresh interval in seconds. Default: 60
-// example: ./readfile.sh test.csv | node server.js both 10 2
+ server command line: ./readfile.sh <heatmapfile> | node server.js <lab> <vehicles> <rate>
+ *Lab = Type of simulation. Valid Values: 1, 2, both. Default: both 
+ *Vehicles = Number of vehicles to track. Defaul: 10
+ *Rate = Vehicles real refresh interval in seconds. Default: 60
+ example: ./readfile.sh test.csv | node server.js both 10 2
 
-// client URL: localhost:8080
+ client URL: localhost:8080
+*/
 
+// Default lab
+var LAB = 'both';
+// Default filename
+var FILENAME = './files/realtimelocation.csv';
+// Default number of vehicles to track
+var MAX_VEHICLES = 10;
+// Default refresh rate in seconds
+var REFRESH_RATE = 60;
 
-const DEFAULT_LAB = 'both';
-var lab = ((process.argv.length > 2) ? process.argv[2] : DEFAULT_LAB);
-
-switch(lab) {
-    case '1':
-        console.log('Lab 1 selected');
-		break;
-    case '2':
-        console.log('Lab 2 selected');
-        break;
-    default:
-		lab = DEFAULT_LAB;	
-        console.log('Labs 1 and 2 selected');
+// Reading command line parameters
+// parameter key's length
+const PARAM_KEY_LENGHT = 3;
+if (process.argv.length > 2) {
+  for (var i = 2; i < process.argv.length; i++) {
+	arg = process.argv[i];
+	if (arg.length >= PARAM_KEY_LENGHT && arg.substring(0,PARAM_KEY_LENGHT) == '-l=')
+		// get lab name
+		LAB = arg.substring(PARAM_KEY_LENGHT);
+	else if (arg.length >= PARAM_KEY_LENGHT && arg.substring(0,PARAM_KEY_LENGHT) =='-f=')
+		// get filename
+		FILENAME = arg.substring(PARAM_KEY_LENGHT);
+	else if (arg.length >= PARAM_KEY_LENGHT && arg.substring(0,PARAM_KEY_LENGHT) == '-v=')
+		// get number of vehicles to track
+		MAX_VEHICLES = (!isNaN(arg.substring(PARAM_KEY_LENGHT)) ? parseInt(arg.substring(PARAM_KEY_LENGHT)) : MAX_VEHICLES);
+	else if (arg.length >= PARAM_KEY_LENGHT && arg.substring(0,PARAM_KEY_LENGHT) == '-r=')
+		// get refresh rate
+		REFRESH_RATE = (!isNaN(arg.substring(PARAM_KEY_LENGHT)) ? parseInt(arg.substring(PARAM_KEY_LENGHT)) : REFRESH_RATE);
+  }
 } 
+console.log('Lab = ' + LAB);
+console.log('Input file = ' + FILENAME);
+console.log('Number of vehicles to track = ' + MAX_VEHICLES);
+console.log('Vehicles real refresh rate (s)= ' + REFRESH_RATE);
 
 const PORT = process.env.PORT || 8080
 const http = require('http');
@@ -38,37 +57,26 @@ const server = http.createServer(app);
 server.listen(PORT);
 const wss = new WSS({ server });
 wss.on('connection', function(socket) {
-  
-	console.log('Opened connection! Total clients = '  + wss.clients.length);
+ 	console.log('Opened connection! Total clients = '  + wss.clients.length);
 	
 	var lab1 = require('./lab1');
 	var lab2 = require('./lab2');
 	
 	socket.on('close', function() {
       console.log('Closed connection! Total clients = '  + wss.clients.length);
-	  if ((lab == '1' || lab == 'both') && wss.clients.length == 0){ 
+	  if ((LAB == '1' || LAB == 'both') && wss.clients.length == 0){ 
 		lab1.close(process.stdin);
 	  }
-	  if (lab == '2' || lab == 'both'){
+	  if (LAB == '2' || LAB == 'both'){
 		lab2.close();
 	  }
 	});
  
- 	if (lab == '1' || lab == 'both') {
+ 	if (LAB == '1' || LAB == 'both') {
  		lab1.start(process.stdin, socket, sendPacket);
 	}
-	if (lab == '2' || lab == 'both') {
-		// input file
-		const filename = 'realtimelocation.csv';
-		console.log('Input file = ' + filename);
-		// Number of vehicles to track
-		const MAX_VEHICLES = ((process.argv.length > 3 && !isNaN(process.argv[3])) ? parseInt(process.argv[3]) : 10);
-		console.log('Number of vehicles to track = ' + MAX_VEHICLES);
-		// Number of vehicles to track
-		const REFRESH_RATE = ((process.argv.length > 4 && !isNaN(process.argv[4])) ? parseInt(process.argv[4]) : 60);
-		console.log('Vehicles real refresh rate = ' + REFRESH_RATE);
-				
-		lab2.start(MAX_VEHICLES, REFRESH_RATE, filename, socket, sendPacket);	
+	if (LAB == '2' || LAB == 'both') {
+		lab2.start(MAX_VEHICLES, REFRESH_RATE, FILENAME, socket, sendPacket);	
 	}
 	
   });
