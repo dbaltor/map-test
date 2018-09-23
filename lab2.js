@@ -1,16 +1,9 @@
-// Denis test-map 2018
+/* Denis test-map 2018
 
-// x moving vehicles updated every y seconds	
+   x moving vehicles updated every y seconds
+*/
 
-const LineByLineReader = require('./lib/line-by-line');
-// file reader
-var	lab2_lineReader;
-
-exports.close = function(){	
-	lab2_lineReader.close();
-}
-
-exports.start = function(MAX_VEHICLES, REFRESH_RATE, filename, socket, sendPacket){	
+exports.start = function(MAX_VEHICLES, REFRESH_RATE, lab2_lineReader, socket, sendPacket){	
 	
 	const ONE_MINUTE = new Date("1970-01-01T00:01:00Z").getTime();
 	const SLEEP = REFRESH_RATE * 1000; // milliseconds converted to seconds
@@ -19,7 +12,8 @@ exports.start = function(MAX_VEHICLES, REFRESH_RATE, filename, socket, sendPacke
 	var vehicles_to_send = MAX_VEHICLES;
 	var last_time = '';
 
-	lab2_lineReader = new LineByLineReader(filename);
+//	console.log('DENISSS - max vehicles = ' + vehicles_to_send);
+	
 	lab2_lineReader.on('line', function (line) {
 
 		if (line == null || line == '') //  read line is empty
@@ -31,13 +25,18 @@ exports.start = function(MAX_VEHICLES, REFRESH_RATE, filename, socket, sendPacke
 		var lat = msg[2];
 		var longi = msg[3];
 		var msg2send = 'm2,' + vehicle + ',' + lat + ',' + longi;
+
+	//console.log('DENISSS - vehicle = ' + vehicle);
+		//console.log('DENISSS - stored_vehicles = ' + stored_vehicles);
 		
 		// add current vehicle to the to send list
-		if (stored_vehicles <= MAX_VEHICLES && !vehicles.includes(vehicle)) {
+		if (stored_vehicles < MAX_VEHICLES && !vehicles.includes(vehicle)) {
 			vehicles.push(vehicle);
 			stored_vehicles++;
 		}
 
+	//console.log('DENISSS - vehicles = ' + vehicles);
+	
 		// TRACKING ONLY ONE VEHICLE TEST
 /*			if (vehicle.includes('Vehicle_847')) {
 			vehicles.push(vehicle);
