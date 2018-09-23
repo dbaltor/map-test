@@ -11,8 +11,6 @@ exports.start = function(MAX_VEHICLES, REFRESH_RATE, lab2_lineReader, socket, se
 	var stored_vehicles = 0;
 	var vehicles_to_send = MAX_VEHICLES;
 	var last_time = '';
-
-//	console.log('DENISSS - max vehicles = ' + vehicles_to_send);
 	
 	lab2_lineReader.on('line', function (line) {
 
@@ -26,16 +24,11 @@ exports.start = function(MAX_VEHICLES, REFRESH_RATE, lab2_lineReader, socket, se
 		var longi = msg[3];
 		var msg2send = 'm2,' + vehicle + ',' + lat + ',' + longi;
 
-	//console.log('DENISSS - vehicle = ' + vehicle);
-		//console.log('DENISSS - stored_vehicles = ' + stored_vehicles);
-		
 		// add current vehicle to the to send list
 		if (stored_vehicles < MAX_VEHICLES && !vehicles.includes(vehicle)) {
 			vehicles.push(vehicle);
 			stored_vehicles++;
 		}
-
-	//console.log('DENISSS - vehicles = ' + vehicles);
 	
 		// TRACKING ONLY ONE VEHICLE TEST
 /*			if (vehicle.includes('Vehicle_847')) {
