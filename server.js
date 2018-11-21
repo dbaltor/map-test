@@ -1,4 +1,5 @@
 /* Denis test-map 2018
+ MAPKEY environment variable must be set with the LocationIQ map token
 
  server command line: ./readfile.sh <heatmapfile> | node server.js -f=<file> -l=<lab> -v=<vehicles> -v=<rate>
  *File = Input filename of vehicles' locations
@@ -6,7 +7,7 @@
  *Vehicles = Number of vehicles to track. Defaul: 10
  *Rate = Vehicles real refresh interval in seconds. Default: 60
  example: ./readfile.sh test.csv | node server.js both 10 2
-
+ 
  client URL: localhost:8080
 */
 
@@ -63,6 +64,7 @@ server.listen(PORT);
 const wss = new WSS({ server });
 wss.on('connection', function(socket) {
  	console.log('Opened connection! Total clients = '  + wss.clients.length);
+	sendPacket(socket, 'm0,' + process.env.MAPKEY); // sending map token
 	
 	// stdin reader
 	var lab1_lineReader;
