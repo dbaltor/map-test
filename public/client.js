@@ -55,9 +55,10 @@
 				container: 'map',
 				attributionControl: false, //need this to show a compact attribution icon (i) instead of the whole text
 				style: unwired.getLayer("streets"), //get Unwired's style template
-				zoom: 7,
-				center: [-1.3402795, 52.0601807] 	// Banbury
-	//			center: [-0.213736,51.523524]		// London
+				zoom: 6,
+				center: [-1.510477, 52.4081812] 	// Coventry
+//				center: [-1.3402795, 52.0601807] 	// Banbury
+//			center: [-0.213736,51.523524]		// London
 			});
 		} else if (messageType == 'm1') { //LAB 1 message received
 			var keyMarker = fields[1] + fields[2];
