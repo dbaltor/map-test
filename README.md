@@ -22,3 +22,11 @@ localhost:8080
 ===========
 
 <a href="https://secure-atoll-96979.herokuapp.com/" target="_blank">Running on Heroku</a>
+
+*Architectural decisions:
+=========================
+1) Event-driven architecture (EDA) chosen rather than one-thread-per-connection. I have opted for implementing this sample application using Node.js because all that must be done is handling data streams. For such I/O-bound scenarios, I believe an EDA will be more scalable whilst lightweight.
+
+2) Push notifications using WebSockets. I believe only WebSockets (or Server-Sent Events) are viable options to meet the required UI update rate.
+
+3) Binary protocol. Protbuf is used for client-server communication to optmise the bandwidth.
