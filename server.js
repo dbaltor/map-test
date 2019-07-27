@@ -64,7 +64,7 @@ server.listen(PORT);
 const wss = new WSS({ server });
 wss.on('connection', function(socket) {
  	console.log('Opened connection! Total clients = '  + wss.clients.length);
-	sendPacket(socket, 'm0,' + process.env.MAPKEY); // sending map token
+	sendPacket(socket, 'm0,' + process.env.MAP_KEY); // sending map token
 	
 	// stdin reader
 	var lab1_lineReader;
