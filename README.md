@@ -1,6 +1,6 @@
 # Denis map-test 2018
 Test map application developed on Node.js.
-<br>MAPKEY environment variable must be set with the LocationIQ map token.
+<br>It requires the MAP_KEY environment variable set to the LocationIQ API token. 
 
 A small application that updates the UK map based on 2 independent continuous streams of events: 
 1) around 2000 risk areas (Heat map) updated every second 
