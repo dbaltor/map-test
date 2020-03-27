@@ -54,7 +54,7 @@ const app = express().use(express.static('public'));
 const server = http.createServer(app);
 const protobuf = require("protobufjs/minimal");
 const readline = require('readline');
-const LineByLineReader = require('./lib/line-by-line');
+const LineByLineReader = require('line-by-line');
 
 const lab1 = require('./lab1');
 const lab2 = require('./lab2');
