@@ -21,11 +21,11 @@ localhost:8080
 *Cloud URL:
 ===========
 
-None
+[Running on Railway](https://vengeful-milk-production.up.railway.app/)
 
 *Architectural decisions:
 =========================
-1) I have chosen an event-driven, non-blocking I/O model rather than one-thread-per-connection to implement this sample application in Node.js. For such an I/O-bound use case, I believe Node.js asynchronous programming model will be more scalable despite being lightweight.
+1) I have chosen Node.js to implement this sample application due to its event-driven, non-blocking I/O model rather than one-thread-per-connection. For such an I/O-bound use case, I believe Node.js asynchronous programming model will be more scalable despite being extremely lightweight.
 
 2) Push notifications using WebSockets. I believe only WebSockets (or Server-Sent Events) are viable options to meet the required UI update rate.
 
