@@ -4,7 +4,7 @@
   "description": "real-time map test",
   "main": "server.js",
   "engines": {
-    "node": "8.11.3"
+    "node": "19.8.1"
   },
   "scripts": {
     "start": "node server.js 2 20 1",
@@ -30,7 +30,6 @@
   },
   "keywords": [
     "node",
-    "heroku",
     "express"
   ]
 }

@@ -14,7 +14,6 @@ RUN npm install
 
 # Bundle app source
 COPY *.js ./
-COPY ./lib/ ./lib/
 COPY ./files/ ./files/
 COPY ./public/ ./public/
 
